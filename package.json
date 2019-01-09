@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/kaeus/starmourn-data#readme",
   "dependencies": {
+    "atob": "^2.1.2",
     "express": "^4.16.4",
-    "firebase-admin": "^6.4.0"
+    "firebase-admin": "^6.4.0",
+    "moment": "^2.23.0"
   }
 }
