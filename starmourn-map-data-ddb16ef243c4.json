@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "starmourn-map-data",
+  "private_key_id": "ddb16ef243c4677f4d3e1c30a6b6d44f6fbf4c7d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC2ZiRnHGP3ar/F\nZNUsPiLS1IxgqGJgHBZQHmNvpB/TVuLIRKA47zytz51Qwt1i48Qu5bjKj7meb8hs\n/LdympwulY8H8ts7HtWhLRxFnwsk236BzM9Pq0LT1ke/v6pz0fogWAbcjIuwH2p8\nwn93GreuE3Eqve+K6k0ouf7bRyoVlpEOh8O4T/UyzKaD3wCx+2jkBYMXFNmMl/Pf\n/anC+v7uOZIuoPFyWxSP4wAaeNf1WChP+WZcAAdJin4R4O2kl1z8EIXFScmJD3Fs\nM/z3KHZkUX4uspw1nkK55MjEFVGkj5AK7Nb9mFEhMTkJ+Lubm51vtbyDSO3cJKOY\nqy+aFKM/AgMBAAECggEAA4s4aQZz9X9ZmSLmn2Y1ei6I697veUh5sTv96iODbSW1\ng6WZU+BnhNDRVoRnz79fxo7Cgpm8umBGQdmm9G81wys3LPqtpUy7S5FVZeESr/Jp\nEVKist+Fdkfr2H8eyNRLKpUSht/TRslsBLxAUGJq0upr4McgCL6wX7qa2UDRZKQ5\nXLENmKsJUlpuEs8Z27NP1AHMqFLe8POHF+72y09PPeIwRHNbz2xzkLHL11wGl/rS\nyO6O0vkGJUGozkf+Gs3Fx8KvDdYvc/1/r82ret2Uyvo1GXQEUqA9A5NYNu7IK1gX\nlVEo63PID1myWyL6oszFY+Araeb0WaVODDHX05r0iQKBgQDds2aD+O4q2uyx2ZPQ\nugMcaKbo41oRWzzq/wxWq3z6/+WldMN0uBHLwn/up/Lek+TmMnhZ3Hdadkpi/pvC\nVWFhfuPuG/8JlqrRc2JaET0eQBZhMbggmy+1f9L4+VyVw6QPIWbmyRuZYFo5YBs7\nKgf2aVh9S+isme9geglG6nAy6QKBgQDSnitmIYgL9Aop1ygZGRmKDslKPenY8W2Y\naI6p/ZmYLzeE2yG+9AtmYc7CcK05irDyDix3FbY8FvYIrpprOFo6PLe11TgHzhX8\n85DLtD0YCme2ZwI4+0CXxg5O313PxCwQbyK8mqmA8NbNRSnYguBn8F1fHSpgs+XW\nDzzSi2M75wKBgD1pdppUGFVSs4JIjQOioz35V1Lnt4lbRrKp19ciRcqZnBmLEKGC\nY5uX0yxe5Y32Vc/WZzQtN/qdDdoCQU9Bq2oAZk8M/ka/r625UqM0Z0O76PcfeKu/\nkSWrtNs26AisWwO98u03BCgmYpfGIYTwDaiaYeLDZj55na+R3oQAaPgRAoGAE6BP\nlP3M6qg8BjgZcXVITvgfw75POzsMJmaf3LFYDblgqA2vcFbXdRvqI25ShgkpgfTW\nKeapC6JsHNUAaLtglQqxZ81NolSO8fpUZNcP1lyp23Jv35VyKHJ5RNpFqKW0IXfp\nub+DyhMnQQuP4bAYbzcTzFgwacB5y1+yIECC58MCgYEAtOWR8GaInUP78ydU7WKt\nInGg2z6g5Z7u2uT7JBILvzaD2SUYxvOcuG5nWjsBiHK9WleGwVGsv6UQ+3E0hv25\ndr1OwPLbGfznI9nWH5TZPSzhuwh3Vsi5/0qGo9nDBml3BqttX6MEHHFv++Gh9ZhI\niryGGh+jMoMjbCcXAQQwYdk=\n-----END PRIVATE KEY-----\n",
+  "client_email": "starmourn-map-data@appspot.gserviceaccount.com",
+  "client_id": "105307557463131901427",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/starmourn-map-data%40appspot.gserviceaccount.com"
+}
