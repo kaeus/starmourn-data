@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
+const url = require('url');
 
 const admin = require('firebase-admin');
 
@@ -13,7 +14,7 @@ admin.initializeApp({
 var db = admin.firestore();
 
 app.get('/', (req, res) => res.send('Hello World!'));
-app.get('/specials', (req, res) => {
+app.get('/special', (req, res) => {
   db.collection('specials').get().then((snapshot) => {
       var specials = []
       if (snapshot.empty) {
@@ -28,12 +29,12 @@ app.get('/specials', (req, res) => {
   });
 });
 
-app.get('/set', (req, res) => {
-  var ref = db.collection('specials').doc('special1');
-  ref.set({
-    roomID: 10,
-    cmd: "takeoff to REYNOLDS"
-  });
+app.get('/uploadSpecial', (req, res) => {
+  var data = atob(req.query.payload);
+  var jsonData = JSON.parse(data);
+
+  var ref = db.collection('specials').doc(jsonData.key);
+  ref.set(jsonData);
 
   res.send(200);
 });
