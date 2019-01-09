@@ -33,7 +33,10 @@ app.get('/getEntries', (req, res) => {
 
 function uploadJsonData(collection, data) {
   var ref = db.collection(collection).doc(data.key);
-  ref.set(data);
+
+  ref.update(data).catch(err => {
+    ref.set(data)
+  });
 
   return true;
 }
@@ -44,16 +47,18 @@ app.get('/uploadEntry', (req, res) => {
 
   var collection = req.query.collection
   var data = atob(req.query.payload);
+
+  console.log(`uploadEntry: ${data}`);
+
   var jsonData = JSON.parse(data);
 
-  if (jsonData.list) {
+  if (jsonData.list != null) {
+    console.log('list');
     jsonData.list.forEach(item => {
-      var ref = db.collection(collection).doc(item.key);
-      ref.set(item);
+      uploadJsonData(collection, item);
     });
   } else {
-    var ref = db.collection(collection).doc(data.key);
-    ref.set(data);
+    uploadJsonData(collection, jsonData);
   }
 
   res.json(SUCCESS_RESP);
