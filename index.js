@@ -1,44 +1,53 @@
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
+
 const atob = require('atob');
 const moment = require('moment');
-
-const admin = require('firebase-admin');
+const Promise = require('promise');
+var MongoClient = require('mongodb').MongoClient;
 
 const FAIL_RESP = { success: false };
 const SUCCESS_RESP = { success: true };
 
-var serviceAccount = require('./starmourn-map-data-ddb16ef243c4.json');
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+// Connection URL
+const dbUrl = 'mongodb://kaeus:hyuchi88@ds253804.mlab.com:53804/heroku_8xc7nt9g';
+const dbName= 'heroku_8xc7nt9g';
 
-var db = admin.firestore();
 
 app.get('/getEntries', (req, res) => {
   if (req.query.collection == null) { res.json(FAIL_RESP); return; }
 
-  db.collection(req.query.collection).get().then((snapshot) => {
-    var items = [];
-    if (!snapshot.empty) {
-      snapshot.forEach(doc => {
-        items.push(doc.data());
-      });
+  console.log(`serving entries for ${req.query.collection} to ${req.ip}`)
+
+  var client = new MongoClient(dbUrl);
+  client.connect(err => {
+    if (err) res.json(err)
+    else {
+      const db = client.db()
+      const collection = db.collection(req.query.collection);
+      collection.find({}).toArray((err, docs) => {
+        if (err != null) res.json(err)
+        else res.json(docs);
+      })
     }
-    res.json(items)
   });
 });
 
-function uploadJsonData(collection, data) {
-  var ref = db.collection(collection).doc(data.key);
-
-  ref.update(data).catch(err => {
-    ref.set(data)
+function uploadJsonData(coll, data) {
+  var client = new MongoClient(dbUrl);
+  client.connect(err => {
+    if (err) return err
+    else {
+      const db = client.db()
+      const collection = db.collection(coll);
+      console.log(`updating entry ${JSON.stringify(data)}`)
+      collection.updateOne({ _id: data._id }, { $set: data }, { upsert:true }, (res) => {
+        return true;
+      });
+    }
   });
-
-  return true;
 }
 
 app.get('/uploadEntry', (req, res) => {
@@ -48,7 +57,7 @@ app.get('/uploadEntry', (req, res) => {
   var collection = req.query.collection
   var data = atob(req.query.payload);
 
-  console.log(`uploadEntry: ${data}`);
+  //console.log(`uploadEntry: ${data}`);
 
   var jsonData = JSON.parse(data);
 
