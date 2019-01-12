@@ -1,0 +1,43 @@
+<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css' integrity='sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS' crossorigin='anonymous'>
+<script src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js' integrity='sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut' crossorigin='anonymous'></script>
+<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js' integrity='sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k' crossorigin='anonymous'></script>
+
+html
+  head
+    title= skills
+  body
+    div(class='container-fluid')
+      div(class='accordion', id='classAccordion')
+      each c, cID in skillData
+        div(class='card', id='heading' + cID)
+          div(class='card-header bg-primary')
+            h2(class='mb-0', data-toggle='collapse', data-target='#collapse' + cID, aria-expanded='false', aria-controls='collapse' + cID)
+              button(class='btn text-white text-decoration-none',)= c.className
+          div(class='container-fluid')
+            div(id='collapse' + cID, class='collapse' aria-labelledby='heading' + cID, data-parent='#classAccordion')
+              div(class='accordion', id='treeAccordion' + cID)
+                each tree, treeName in c.skills
+                  div(class='card', id='heading' + treeName)
+                    div(class='card-header')
+                      h2(class='mb-0', data-toggle='collapse', data-target='#collapse' + treeName, aria-expanded='false', aria-controls='collapse' + treeName)
+                        button(class='btn btn-link text-decoration-none')= treeName
+                    div(id='collapse' + treeName, class='collapse' aria-labelledby='heading' + treeName, data-parent='#treeAccordion' + cID)
+                      div(class='container-fluid')
+                        div(class='accordion', id='skillAccordion' + treeName)
+                         each skill, skillName in tree
+                          div(class='card-header')
+                            h2(class='mb-0', data-toggle='collapse', data-target='#collapse' + skillName, aria-expanded='false', aria-controls='collapse' + skillName)
+                              button(class='btn btn-link text-decoration-none')= skillName
+                          div(id='collapse' + skillName, class='collapse' aria-labelledby='heading' + skillName, data-parent='#skillAccordion' + treeName)
+                            div(class='container-fluid')
+                              table(class='table table-striped table-sm table-bordered')
+                                thead
+                                  tr
+                                    th(style='width: 250px') Property
+                                    th Value
+                                tbody
+                                each value, prop in skill
+                                  tr
+                                    th(scope='row')= prop
+                                    td= value

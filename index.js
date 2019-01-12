@@ -21,23 +21,37 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.set('view engine', 'pug')
+
+function getEntries(coll, success, fail) {
+  var client = new MongoClient(dbUrl);
+  client.connect(err => {
+    if (err) fail(err)
+    else {
+      const db = client.db()
+      const collection = db.collection(coll);
+      collection.find({}).toArray((err, docs) => {
+        if (err != null) fail(err)
+        else success(docs);
+      })
+    }
+  });
+}
+
+app.get('/skills', (req, res) => {
+  getEntries('skills', skills => {
+    res.render('skills', {skillData: skills})
+  }, err => {
+    res.json(FAIL_RESP)
+  })
+});
+
 app.get('/getEntries', (req, res) => {
   if (req.query.collection == null) { res.json(FAIL_RESP); return; }
 
   console.log(`serving entries for ${req.query.collection} to ${req.ip}`)
 
-  var client = new MongoClient(dbUrl);
-  client.connect(err => {
-    if (err) res.json(err)
-    else {
-      const db = client.db()
-      const collection = db.collection(req.query.collection);
-      collection.find({}).toArray((err, docs) => {
-        if (err != null) res.json(err)
-        else res.json(docs);
-      })
-    }
-  });
+  getEntries(req.query.collection, docs => res.json(docs), err => res.json(err));
 });
 
 function uploadJsonData(coll, data) {
