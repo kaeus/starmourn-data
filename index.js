@@ -15,6 +15,11 @@ const SUCCESS_RESP = { success: true };
 const dbUrl = 'mongodb://kaeus:hyuchi88@ds253804.mlab.com:53804/heroku_8xc7nt9g';
 const dbName= 'heroku_8xc7nt9g';
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 app.get('/getEntries', (req, res) => {
   if (req.query.collection == null) { res.json(FAIL_RESP); return; }
