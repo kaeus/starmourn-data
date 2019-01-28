@@ -38,6 +38,27 @@ function getEntries(coll, success, fail) {
   });
 }
 
+function getIndexedEntries(coll, success, fail) {
+  var client = new MongoClient(dbUrl);
+  client.connect(err => {
+    if (err) fail(err)
+    else {
+      const db = client.db()
+      const collection = db.collection(coll);
+      collection.find({}).toArray((err, docs) => {
+        if (err != null) fail(err)
+        else {
+          var indexedCollection = {};
+          docs.forEach(item => {
+            indexedCollection[item._id] = item;
+          })
+          success(indexedCollection);
+        }
+      })
+    }
+  });
+}
+
 app.get('/skills', (req, res) => {
   getEntries('skills', skills => {
     res.render('skills', {skillData: skills})
@@ -52,6 +73,14 @@ app.get('/getEntries', (req, res) => {
   console.log(`serving entries for ${req.query.collection} to ${req.ip}`)
 
   getEntries(req.query.collection, docs => res.json(docs), err => res.json(err));
+});
+
+app.get('/getByKey', (req, res) => {
+  if (req.query.collection == null) { res.json(FAIL_RESP); return; }
+
+  console.log(`serving entries for ${req.query.collection} to ${req.ip}`)
+
+  getIndexedEntries(req.query.collection, docs => res.json(docs), err => res.json(err));
 });
 
 function uploadJsonData(coll, data) {
@@ -69,6 +98,22 @@ function uploadJsonData(coll, data) {
   });
 }
 
+function uploadJsonList(coll, data) {
+  var client = new MongoClient(dbUrl);
+  client.connect(err => {
+    if (err) return err
+    else {
+      const db = client.db()
+      const collection = db.collection(coll);
+      console.log(`updating entry ${JSON.stringify(data)}`)
+      collection.insertMany(data, (res) => {
+        return true;
+      });
+    }
+  });
+}
+
+
 app.get('/uploadEntry', (req, res) => {
   if (req.query.collection == null) { res.json(FAIL_RESP); return; }
   if (req.query.payload == null) { res.json(FAIL_RESP); return; }
@@ -81,15 +126,26 @@ app.get('/uploadEntry', (req, res) => {
   var jsonData = JSON.parse(data);
 
   if (jsonData.list != null) {
-    console.log('list');
-    jsonData.list.forEach(item => {
-      uploadJsonData(collection, item);
-    });
+    uploadJsonList(collection, jsonData.list);
+    // console.log(jsonData.list);
+    // jsonData.list.forEach(item => {
+      // uploadJsonData(collection, item);
+    // });
   } else {
     uploadJsonData(collection, jsonData);
   }
 
   res.json(SUCCESS_RESP);
+});
+
+
+
+app.get('/map', (req, res) => {
+  getIndexedEntries('map-data', mapData => {
+    res.render('map-data', { mapData: mapData })
+  }, err => {
+    res.json(FAIL_RESP)
+  })
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

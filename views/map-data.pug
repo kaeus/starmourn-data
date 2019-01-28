@@ -1,0 +1,31 @@
+<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css' integrity='sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS' crossorigin='anonymous'>
+<script src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js' integrity='sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut' crossorigin='anonymous'></script>
+<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js' integrity='sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k' crossorigin='anonymous'></script>
+
+html
+  head
+    title= StarmournMap
+    style
+      include map-data.css
+  body
+    - var regionColors = {"Narchspace": "DimGray", "Voniken Krel": "firebrick","Celestine Ascendancy": "blue","Diamond Belt": "cyan","Song Dominion": "purple","Vyan Shroud": "magenta","Fatar Shroud": "yellow","Nabian States": "BlueViolet","Y'saari Covenant": "turquoise","Hreysil Cloud": "orange","Grensuhlian": "LightBlue","Selassian Dynasty": "goldenrod","Zinari Imperium": "SkyBlue","Scatterhome": "ForestGreen","Ibyssian Brotherhood": "Navy"}
+    - function getTileColor(tileData) {
+    -   if (tileData == null) return 'black';
+    -   if (tileData.region == null) return 'grey';
+    -   return regionColors[tileData.region] || 'grey';
+    - }
+    - var xStart = 22
+    - var yStart = 28
+    div(class='container')
+    - for (var y = 1; y < 32; y++)
+      div(class='mapRow')
+        - for(var x = 1; x < 59; x++)
+          - var xCoord = x + xStart
+          - var yCoord = y + yStart
+          - var key = `${xCoord}${yCoord}`
+          - var mapTile = mapData[key]
+          - var tileClass = (mapData[key] && 'filledSpace' || 'emptySpace')
+          - var tileColor = getTileColor(mapData[key])
+          div(class='mapCell', style='background-color: ' + tileColor)
+            span= (mapTile || {}).display || '.'
