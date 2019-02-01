@@ -99,12 +99,72 @@ function initMap()
         hexSymbol = hexSymbolVoidgate(mapCanvas, corners).translate(point.x, point.y);
       }
 
+      if (pointData.cosmpiercer) {
+        tooltip = `${tooltip}<br/>Cosmpiercer (Rank ${pointData.cosmpiercer.level})`
+        hexSymbol = hexSymbolCosmpiercer(mapCanvas, corners).translate(point.x, point.y);
+      }
+
       let tile = mapCanvas.use(hexSymbol)
           .attr('data-tippy-content', tooltip)
           .attr('data-tippy-delay', '[150, 200]')
           .on('click', handleClick, { x: xCoord, y: yCoord })
           .addClass('noSelect');
     }
+  });
+
+  Grid.rectangle({ width: 58, height: 31 }).forEach(hex => {
+    const point = hex.toPoint();
+    let xCoord = hex.x + xStart;
+    let yCoord = hex.y + yStart;
+    let key = `${xCoord}${yCoord}`;
+    let pointData = mapData[key];
+
+    if (pointData != null) {
+      if (pointData.voidgate) {
+        var path = 'M 0 200 C 0 0 250 0 250 200';
+        var text = mapCanvas.text(function (add) {
+          add.tspan(pointData.voidgate.name)
+        });
+
+        text.path(path).font({
+          family: 'Casanova Scotia'
+          , size: 16
+          , fill: "#ffffff"
+          , opacity: 0.6
+          , anchor: 'middle'
+        }).translate(point.x - 108, point.y - 62);
+        text.textPath().attr('startOffset', '50%').attr('pointer-events', 'none');
+      }
+
+      if (pointData.cosmpiercer) {
+        let fixedY = point.y;
+        var path = 'M 0 0 C 0 200 250 200 250 0';
+
+        if (pointData.key == "3134"
+          || pointData.key == "4034"
+          || pointData.key == "2534") {
+          path = 'M 0 200 C 0 0 250 0 250 200';
+          fixedY -= 60;
+        }
+        else {
+          fixedY -= 96;
+        }
+
+        var text = mapCanvas.text(function (add) {
+          add.tspan(`${pointData.quadrant}-${pointData.key}`)
+        });
+
+        text.path(path).font({
+          family: 'Casanova Scotia'
+          , size: 12
+          , fill: "#ffffff"
+          , opacity: 0.6
+          , anchor: 'middle'
+        }).translate(point.x - 108, fixedY);
+        text.textPath().attr('startOffset', '50%').attr('pointer-events', 'none');
+      }
+    }
+
   });
 
   tippy('use');
