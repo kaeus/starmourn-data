@@ -20,9 +20,12 @@
     "atob": "^2.1.2",
     "express": "^4.16.4",
     "firebase-admin": "^6.4.0",
+    "honeycomb-grid": "^1.4.2",
     "moment": "^2.23.0",
     "mongodb": "^3.1.10",
+    "popper.js": "^1.14.7",
     "promise": "^8.0.2",
-    "pug": "^2.0.3"
+    "pug": "^2.0.3",
+    "tooltip.js": "^1.3.1"
   }
 }

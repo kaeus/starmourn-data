@@ -138,14 +138,18 @@ app.get('/uploadEntry', (req, res) => {
   res.json(SUCCESS_RESP);
 });
 
-
-
-app.get('/map', (req, res) => {
+app.get('/map-data', (req, res) => {
   getIndexedEntries('map-data', mapData => {
-    res.render('map-data', { mapData: mapData })
+    res.json(mapData)
   }, err => {
     res.json(FAIL_RESP)
   })
+})
+
+app.get('/map', (req, res) => {
+  res.render('map');
 });
+
+app.use(express.static('public'));
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
