@@ -31,6 +31,18 @@ function loadMapData()
   });
 }
 
+function getMapDataFromVoidgate(voidgateName)
+{
+  for(var key in mapData) {
+    var pointData = mapData[key];
+    if (pointData.voidgate && pointData.voidgate.name == voidgateName) {
+      return pointData;
+    }
+  }
+
+  return null;
+}
+
 function loadPoint(x, y)
 {
   let key = `${x}${y}`;
@@ -82,6 +94,7 @@ function initMap()
     let pointData = mapData[key];
 
     if (pointData != null) {
+      pointData.point = point;
       var pointColor = randColour();
       var opacity = 1;
       var tooltip = `${pointData.quadrant}-${pointData.key}`
@@ -111,6 +124,25 @@ function initMap()
           .addClass('noSelect');
     }
   });
+
+  Grid.rectangle({ width: 58, height: 31 }).forEach(hex => {
+      const point = hex.toPoint();
+      let xCoord = hex.x + xStart;
+      let yCoord = hex.y + yStart;
+      let key = `${xCoord}${yCoord}`;
+      let pointData = mapData[key];
+
+      if (pointData != null) {
+        if (pointData.voidgate != null && pointData.voidgate.links != null) {
+          for (let i = 0; i < pointData.voidgate.links.length; i++) {
+            let outboundPoint = getMapDataFromVoidgate(pointData.voidgate.links[i]);
+            if (outboundPoint != null && outboundPoint.point != null) {
+              var line = mapCanvas.line(point.x + 18, point.y + 18, outboundPoint.point.x + 18, outboundPoint.point.y + 18).stroke({ width: 1, color: "#2c6015" }).attr('pointer-events', 'none');
+            }
+          }
+        }
+      }
+    });
 
   Grid.rectangle({ width: 58, height: 31 }).forEach(hex => {
     const point = hex.toPoint();
@@ -164,7 +196,6 @@ function initMap()
         text.textPath().attr('startOffset', '50%').attr('pointer-events', 'none');
       }
     }
-
   });
 
   tippy('use');
