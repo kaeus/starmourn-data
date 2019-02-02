@@ -80,7 +80,6 @@ function loadPoint(x, y)
   if (mapData[key]) {
     calcPointData(mapData[key]);
     editor.setValue(mapData[key]);
-    $('#pointHeader').html(`${mapData[key].quadrant}-${key}`);
     $('#editor').modal();
   }
 }

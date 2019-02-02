@@ -1,10 +1,15 @@
 var schema = {
-  "title": "Properties",
+  "headerTemplate": "{{self.quadrant}}-{{self._id}}",
   "type": "object",
   "required": [
     "_id",
   ],
   "properties": {
+    "quadrant": {
+      "options": {
+        "hidden": true
+      },
+    },
     "_id": {
       "type": "string",
       "description": "Space Coordinates",
