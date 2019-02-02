@@ -42,6 +42,63 @@ var schema = {
         "Arcturus",
       ]
     },
+    "planets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "desc", "x", "y"],
+        "properties": {
+          "name": {
+            "type": "string",
+          },
+          "desc": {
+            "type": "string",
+          },
+          "x": {
+            "type": "integer"
+          },
+          "y": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "stations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "x", "y"],
+        "properties": {
+          "name": {
+            "type": "string",
+          },
+          "x": {
+            "type": "integer"
+          },
+          "y": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "suns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "x", "y"],
+        "properties": {
+          "name": {
+            "type": "string",
+          },
+          "x": {
+            "type": "integer"
+          },
+          "y": {
+            "type": "integer"
+          }
+        }
+      }
+    },
     "cosmpiercer": {
       "type": "object",
       "required": ["level"],

@@ -163,7 +163,35 @@ app.get('/map-data', (req, res) => {
   }, err => {
     res.json(FAIL_RESP)
   })
-})
+});
+
+app.get('/map-aliases', (req, res) => {
+  getIndexedEntries('map-data', mapData => {
+
+  var aliases = {};
+
+  for(var key in mapData) {
+    var point = mapData[key];
+
+    var celestials = ['stations', 'planets', 'suns'];
+
+    for(var cIndex in celestials) {
+      var celestial = celestials[cIndex];
+
+      if (point[celestial]) {
+        for(var i in point[celestial]) {
+          var item = point[celestial][i];
+          aliases[item.name] = point._id;
+        }
+      }
+    }
+  }
+
+    res.json(aliases)
+  }, err => {
+    res.json(FAIL_RESP)
+  })
+});
 
 app.post('/update-map', (req, res) => {
   console.log('uplodaing map-data', req.body._id);

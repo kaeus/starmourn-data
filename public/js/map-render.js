@@ -6,6 +6,7 @@ var yStart = 28;
 var showCosmpiercers = false;
 var showVoidgates = true;
 var showRegions = true;
+var showStations = false;
 
 var editor;
 var mapCanvas;
@@ -32,6 +33,7 @@ $(document).ready(() => {
   $('#cosmpiercersToggle').attr('checked', showCosmpiercers);
   $('#voidgatesToggle').attr('checked', showVoidgates);
   $('#regionsToggle').attr('checked', showRegions);
+  $('#stationsToggle').attr('checked', showStations);
 
   $('#cosmpiercersToggle').click(() => {
     showCosmpiercers = $('#cosmpiercersToggle').prop('checked');
@@ -45,6 +47,11 @@ $(document).ready(() => {
 
   $('#regionsToggle').click(() => {
     showRegions = $('#regionsToggle').prop('checked');
+    initMap();
+  });
+
+  $('#stationsToggle').click(() => {
+    showStations = $('#stationsToggle').prop('checked');
     initMap();
   });
 
@@ -184,6 +191,23 @@ function initMap()
         tooltip = `${tooltip}<br/>Cosmpiercer (Rank ${pointData.cosmpiercer.level})`
         if (showCosmpiercers) {
           hexSymbol = hexSymbolCosmpiercer(mapCanvas, corners).translate(point.x, point.y);
+        }
+      }
+
+      if (pointData.stations) {
+        for(var i in pointData.stations) {
+          let station = pointData.stations[i];
+          tooltip = `${tooltip}<br/>${station.name} Station: ${station.x}, ${station.y}`
+        }
+        if (showStations) {
+          hexSymbol = hexSymbolStation(mapCanvas, corners).translate(point.x, point.y);
+        }
+      }
+
+      if (pointData.planets) {
+        for(var i in pointData.planets) {
+          let planet = pointData.planets[i];
+          tooltip = `${tooltip}<br/>Planet ${planet.name}: ${planet.x}, ${planet.y}`
         }
       }
 
