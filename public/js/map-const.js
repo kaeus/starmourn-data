@@ -13,24 +13,24 @@ var regionColors = {
   "Selassian Dynasty": "goldenrod",
   "Zinari Imperium": "SkyBlue",
   "Scatterhome": "ForestGreen",
-  "Ibyssian Brotherhood": "Navy"
+  "Ibyssian Brotherhood": "Navy",
+  "Iron Corsairs": "firebrick",
+  "Arcturus": "green",
+  "Syndicate": "magenta",
 }
 
-class Voidgate {
-  constructor(name, x, y, dest) {
-    this.name = name;
-    this.x = x;
-    this.y = y;
-    this.dest = dest;
-  }
-}
+const hexSymbolVoidgate = (canvas, corners) => canvas.symbol()
+  .polygon(corners.map(({ x, y }) => `${x},${y}`))
+  .fill('#2c6015')
+  .stroke({ width: 0.5, color: '#373739' });
 
-class Cosmpiercer {
-  constructor(name, x, y, level) {
-    this.name = name;
-    this.x = x;
-    this.y = y;
-    this.level = level;
-  }
-}
+const hexSymbolCosmpiercer = (canvas, corners) => canvas.symbol()
+  .polygon(corners.map(({ x, y }) => `${x},${y}`))
+  .fill('#2c1461')
+  .stroke({ width: 0.5, color: '#373739' });
 
+const hexSymbolStation = (canvas, corners) => canvas.symbol()
+  .polygon(corners.map(({ x, y }) => `${x},${y}`))
+  .fill('#1a4f89')
+  .opacity(0.8)
+  .stroke({ width: 0.5, color: '#373739' });

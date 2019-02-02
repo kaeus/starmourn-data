@@ -5,14 +5,18 @@ html
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js")
+    script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js")
     script(src='https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.7.1/svg.min.js')
     script(src='https://unpkg.com/tippy.js@3/dist/tippy.all.min.js')
+
 
     script(src='/js/honeycomb.min.js')
     script(src='/js/scale.js')
     script(src='/js/stars.js')
+
+    script(src='/js/schema.js')
 
     script(src='/js/map-const.js')
     script(src='/js/map-render.js')
@@ -23,9 +27,32 @@ html
       div(class='text-center')
         div(class='spinner-grow m-5 text-light', role='status', style='width: 5rem; height: 5rem;')
           span(class='sr-only') Loading...
-    div(class='container-fluid', id='map')
+    div(class='container-fluid', id='map-container')
+      div(id='map')
+    div(class='container-fluid', id='map-key')
+      div(class='row')
+        div(class='col-md-2')
+          div(class='card text-white bg-dark mb-3')
+            div(class='card-header') Toggles
+            div(class='card-body')
+              form(id='toggles')
+                div(class='form-group form-check')
+                  input(type='checkbox', class='form-check-input', id='cosmpiercersToggle')
+                  label(class='form-check-label', for='cosmpiercersToggle') Show Cosmpiercers
+                div(class='form-group form-check')
+                  input(type='checkbox', class='form-check-input', id='voidgatesToggle')
+                  label(class='form-check-label', for='voidgatesToggle') Show Voidgates
+                div(class='form-group form-check')
+                  input(type='checkbox', class='form-check-input', id='regionsToggle')
+                  label(class='form-check-label', for='regionsToggle') Show Regions
+
     div(class='container-fluid')
-      div(class='input-group')
-        div(class='input-group-prepend')
-          span(class='input-group-text') Point Data
-        textarea(class='form-control', style='height: 250px', aria-label='Point Data', id='pointData')
+      div(class='modal fade', id='editor', tabindex='-1', role='dialog', aria-hidden='true')
+        div(class='modal-dialog modal-xl', role='document')
+          div(class='modal-content')
+            div(class='modal-header')
+              h5(class='modal-title', id='pointHeader')
+            div(class='modal-body', id='pointData')
+            div(class='modal-footer')
+              button(type='button', class='btn btn-secondary', data-dismiss='modal') Close
+              button(type='button', class='btn btn-primary', onClick='savePoint()') Save

@@ -3,32 +3,63 @@ var mapData = {}
 var xStart = 22;
 var yStart = 28;
 
+var showCosmpiercers = false;
+var showVoidgates = true;
+var showRegions = true;
 
-const hexSymbolVoidgate = (canvas, corners) => canvas.symbol()
-  .polygon(corners.map(({ x, y }) => `${x},${y}`))
-  .fill('#2c6015')
-  .stroke({ width: 0.5, color: '#373739' });
+var editor;
+var mapCanvas;
 
-const hexSymbolCosmpiercer = (canvas, corners) => canvas.symbol()
-  .polygon(corners.map(({ x, y }) => `${x},${y}`))
-  .fill('#2c1461')
-  .stroke({ width: 0.5, color: '#373739' });
+JSONEditor.defaults.theme = 'bootstrap4';
+JSONEditor.defaults.iconlib = 'bootstrap4';
 
-const hexSymbolStation = (canvas, corners) => canvas.symbol()
-  .polygon(corners.map(({ x, y }) => `${x},${y}`))
-  .fill('#1a4f89')
-  .opacity(0.8)
-  .stroke({ width: 0.5, color: '#373739' });
+$(document).ready(() => {
+  var container = document.getElementById('pointData');
+  editor = new JSONEditor(container, {
+    schema: schema,
+    no_additional_properties: true,
+    //disable_edit_json: true,
+    compact: true
+  });
 
-function loadMapData()
-{
+  editor.on('change', function() {
+    var point = editor.getValue();
+    calcPointData(point);
+  });
+
+  mapCanvas = SVG('map').size(1850, 880);
+
+  $('#cosmpiercersToggle').attr('checked', showCosmpiercers);
+  $('#voidgatesToggle').attr('checked', showVoidgates);
+  $('#regionsToggle').attr('checked', showRegions);
+
+  $('#cosmpiercersToggle').click(() => {
+    showCosmpiercers = $('#cosmpiercersToggle').prop('checked');
+    initMap();
+  });
+
+  $('#voidgatesToggle').click(() => {
+    showVoidgates = $('#voidgatesToggle').prop('checked');
+    initMap();
+  });
+
+  $('#regionsToggle').click(() => {
+    showRegions = $('#regionsToggle').prop('checked');
+    initMap();
+  });
+
   $.ajax({
     url: '/map-data'
   }).done(function(data) {
     mapData = data;
-    $('#loading').hide();
     initMap();
   });
+});
+
+function calcPointData(point)
+{
+  point.quadrant = calcQuadrant(point._id);
+  point.coords = calcCoords(point._id);
 }
 
 function getMapDataFromVoidgate(voidgateName)
@@ -47,7 +78,31 @@ function loadPoint(x, y)
 {
   let key = `${x}${y}`;
   if (mapData[key]) {
-    $('#pointData').val(JSON.stringify(mapData[key], null, 2))
+    calcPointData(mapData[key]);
+    editor.setValue(mapData[key]);
+    $('#pointHeader').html(`${mapData[key].quadrant}-${key}`);
+    $('#editor').modal();
+  }
+}
+
+function savePoint()
+{
+  if (editor.validate()) {
+    var point = editor.getValue();
+    var pointData = JSON.stringify(point);
+
+    mapData[point._id] = point;
+    initMap();
+
+    $.ajax({
+      url: '/update-map',
+      type: 'post',
+      data: pointData,
+      dataType: 'json',
+      contentType: 'application/json',
+    }).done(function(data) {
+      $('#editor').modal('hide')
+    });
   }
 }
 
@@ -63,6 +118,15 @@ function randColour() {
   }
 }
 
+function calcQuadrant(key) {
+  let coords = calcCoords(key);
+  return `${coords.y < 41 ? 'C' : 'R'}${coords.x < 41 ? 'A' : 'S'}`
+}
+function calcCoords(key) {
+  let x = parseInt(key.substr(0, 2));
+  let y = parseInt(key.substr(2, 2));
+  return { x: x, y: y }
+}
 
 function getHexSymbol(canvas, corners, colour, opacity) {
     return canvas.symbol()
@@ -77,7 +141,10 @@ function handleClick(event) {
 
 function initMap()
 {
-  var mapCanvas = SVG('map').size(1850, 880);
+  $('#loading').show();
+  //$('#map-container').hide();
+
+  mapCanvas.clear();
   drawStars(mapCanvas);
 
   const Hex = Honeycomb.extendHex({ size: 18 });
@@ -97,9 +164,9 @@ function initMap()
       pointData.point = point;
       var pointColor = randColour();
       var opacity = 1;
-      var tooltip = `${pointData.quadrant}-${pointData.key}`
+      var tooltip = `${calcQuadrant(pointData._id)}-${pointData._id}`
 
-      if (pointData.region && regionColors[pointData.region]) {
+      if (pointData.region && regionColors[pointData.region] && showRegions) {
         pointColor = regionColors[pointData.region];
         opacity = 0.55;
         tooltip = `${tooltip}<br/>Region: ${pointData.region}`
@@ -109,12 +176,16 @@ function initMap()
 
       if (pointData.voidgate) {
         tooltip = `${tooltip}<br/>Voidgate: ${pointData.voidgate.x}, ${pointData.voidgate.y}`
-        hexSymbol = hexSymbolVoidgate(mapCanvas, corners).translate(point.x, point.y);
+        if (showVoidgates) {
+          hexSymbol = hexSymbolVoidgate(mapCanvas, corners).translate(point.x, point.y);
+        }
       }
 
       if (pointData.cosmpiercer) {
         tooltip = `${tooltip}<br/>Cosmpiercer (Rank ${pointData.cosmpiercer.level})`
-        hexSymbol = hexSymbolCosmpiercer(mapCanvas, corners).translate(point.x, point.y);
+        if (showCosmpiercers) {
+          hexSymbol = hexSymbolCosmpiercer(mapCanvas, corners).translate(point.x, point.y);
+        }
       }
 
       let tile = mapCanvas.use(hexSymbol)
@@ -125,7 +196,8 @@ function initMap()
     }
   });
 
-  Grid.rectangle({ width: 58, height: 31 }).forEach(hex => {
+  if (showVoidgates) {
+    Grid.rectangle({ width: 58, height: 31 }).forEach(hex => {
       const point = hex.toPoint();
       let xCoord = hex.x + xStart;
       let yCoord = hex.y + yStart;
@@ -143,6 +215,7 @@ function initMap()
         }
       }
     });
+  }
 
   Grid.rectangle({ width: 58, height: 31 }).forEach(hex => {
     const point = hex.toPoint();
@@ -152,7 +225,7 @@ function initMap()
     let pointData = mapData[key];
 
     if (pointData != null) {
-      if (pointData.voidgate) {
+      if (pointData.voidgate && showVoidgates) {
         var path = 'M 0 200 C 0 0 250 0 250 200';
         var text = mapCanvas.text(function (add) {
           add.tspan(pointData.voidgate.name)
@@ -168,13 +241,13 @@ function initMap()
         text.textPath().attr('startOffset', '50%').attr('pointer-events', 'none');
       }
 
-      if (pointData.cosmpiercer) {
+      if (pointData.cosmpiercer && showCosmpiercers) {
         let fixedY = point.y;
         var path = 'M 0 0 C 0 200 250 200 250 0';
 
-        if (pointData.key == "3134"
-          || pointData.key == "4034"
-          || pointData.key == "2534") {
+        if (pointData._id == "3134"
+          || pointData._id == "4034"
+          || pointData._id == "2534") {
           path = 'M 0 200 C 0 0 250 0 250 200';
           fixedY -= 60;
         }
@@ -183,7 +256,7 @@ function initMap()
         }
 
         var text = mapCanvas.text(function (add) {
-          add.tspan(`${pointData.quadrant}-${pointData.key}`)
+          add.tspan(`${pointData.quadrant}-${pointData._id}`)
         });
 
         text.path(path).font({
@@ -199,6 +272,7 @@ function initMap()
   });
 
   tippy('use');
-}
 
-loadMapData();
+  $('#loading').hide();
+  $('#map-container').show();
+}

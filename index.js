@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 
+var bodyParser = require('body-parser');
+
 const atob = require('atob');
 const moment = require('moment');
 const Promise = require('promise');
@@ -20,6 +22,8 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
+app.use(bodyParser.json());
 
 app.set('view engine', 'pug')
 
@@ -83,6 +87,21 @@ app.get('/getByKey', (req, res) => {
   getIndexedEntries(req.query.collection, docs => res.json(docs), err => res.json(err));
 });
 
+function overwriteJsonData(coll, data) {
+  var client = new MongoClient(dbUrl);
+  client.connect(err => {
+    if (err) return err
+    else {
+      const db = client.db()
+      const collection = db.collection(coll);
+      console.log(`updating entry ${JSON.stringify(data)}`)
+      collection.update({ _id: data._id }, data, { upsert: true, multi: false }, (res) => {
+        return true;
+      });
+    }
+  });
+}
+
 function uploadJsonData(coll, data) {
   var client = new MongoClient(dbUrl);
   client.connect(err => {
@@ -144,6 +163,13 @@ app.get('/map-data', (req, res) => {
   }, err => {
     res.json(FAIL_RESP)
   })
+})
+
+app.post('/update-map', (req, res) => {
+  console.log('uplodaing map-data', req.body._id);
+  overwriteJsonData('map-data', req.body)
+
+  res.json(SUCCESS_RESP);
 })
 
 app.get('/map', (req, res) => {
