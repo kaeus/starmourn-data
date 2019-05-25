@@ -14,7 +14,7 @@ const SUCCESS_RESP = { success: true };
 
 
 // Connection URL
-const dbUrl = 'mongodb://kaeus:hyuchi88@ds253804.mlab.com:53804/heroku_8xc7nt9g';
+const dbUrl = 'mongodb://{REDACTED}@ds253804.mlab.com:53804/heroku_8xc7nt9g';
 const dbName= 'heroku_8xc7nt9g';
 
 app.use(function(req, res, next) {
